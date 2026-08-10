@@ -329,11 +329,11 @@ reset_user() {
         ${xui_folder}/x-ui setting -username "${config_account}" -password "${config_password}" > /dev/null 2>&1
     else
         ${xui_folder}/x-ui setting -username "${config_account}" -password "${config_password}" -resetTwoFactor=true > /dev/null 2>&1
-        echo -e "Two factor authentication has been disabled."
+        echo -e "两步验证已禁用。"
     fi
 
-    echo -e "Panel login username has been reset to: ${green} ${config_account} ${plain}"
-    echo -e "Panel login password has been reset to: ${green} ${config_password} ${plain}"
+    echo -e "面板登录用户名已重置为： ${green} ${config_account} ${plain}"
+    echo -e "面板登录密码已重置为： ${green} ${config_password} ${plain}"
     echo -e "${green} 请使用新的用户名和密码登录XUI面板，请牢记！ ${plain}"
     confirm_restart
 }
@@ -360,7 +360,7 @@ reset_webbasepath() {
     ${xui_folder}/x-ui setting -webBasePath "${config_webBasePath}" > /dev/null 2>&1
 
     echo -e "Web base path has been reset to: ${green}${config_webBasePath}${plain}"
-    echo -e "${green}Please use the new web base path to access the panel.${plain}"
+    echo -e "${green}请使用新的Web基本路径访问面板。${plain}"
     restart
 }
 
@@ -497,7 +497,7 @@ start() {
         LOGI "面板已在运行，无需重复启动。如需重启，请选择重启"
     else
         if [[ "${running_in_docker}" == "true" ]]; then
-            LOGE "Panel process is not running inside this container."
+            LOGE "面板进程未在此容器中运行。"
             LOGI "Docker中面板是容器主进程。重启容器以恢复："
             LOGI "  docker restart <container_name>"
             if [[ $# == 0 ]]; then
@@ -513,7 +513,7 @@ start() {
         sleep 2
         check_status
         if [[ $? == 0 ]]; then
-            LOGI "x-ui Started Successfully"
+            LOGI "x-ui 启动成功"
         else
             LOGE "面板启动失败，可能启动时间超过两秒，请稍后查看日志r"
         fi
@@ -547,7 +547,7 @@ stop() {
         sleep 2
         check_status
         if [[ $? == 1 ]]; then
-            LOGI "x-ui and xray stopped successfully"
+            LOGI "x-ui 和 xray 已停止成功"
         else
             LOGE "面板停止失败，可能停止时间超过两秒，请稍后查看日志"
         fi
