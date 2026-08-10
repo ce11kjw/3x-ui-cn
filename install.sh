@@ -1715,6 +1715,6 @@ show_panel_info() {
     echo ""
 }
 
-show_panel_info
-
 install_x-ui $1
+
+show_panel_info
