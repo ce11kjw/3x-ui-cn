@@ -10,6 +10,16 @@
 bash <(curl -Ls https://raw.githubusercontent.com/ce11kjw/3x-ui-cn/main/install.sh)
 ```
 
+## 一键重新部署
+
+如果需要完全重新部署（卸载旧版+安装中文版），运行：
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/ce11kjw/3x-ui-cn/main/redeploy.sh)
+```
+此脚本会：停止旧服务 → 卸载旧版 → 安装中文版 → 替换管理菜单为中文
+
+---
+
 ## 替换管理菜单为中文版
 
 安装完成后，运行以下命令将 `x-ui` 管理菜单替换为中文：
