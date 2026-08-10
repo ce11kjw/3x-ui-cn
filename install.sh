@@ -1680,4 +1680,41 @@ install_x-ui() {
 
 echo -e "${green}正在运行...${plain}"
 install_base
+
+# ==================== 显示面板信息 ====================
+show_panel_info() {
+    local settings=$(${xui_folder}/x-ui setting -show true 2>/dev/null)
+    local username=$(echo "$settings" | grep -Eo 'username: .+' | awk '{print $2}')
+    local password=$(echo "$settings" | grep -Eo 'password: .+' | awk '{print $2}')
+    local port=$(echo "$settings" | grep -Eo 'port: .+' | awk '{print $2}')
+    local webBasePath=$(echo "$settings" | grep -Eo 'webBasePath: .+' | awk '{print $2}')
+    local cert=$(echo "$settings" | grep -Eo 'cert: .+' | awk '{print $2}' | tr -d '[:space:]')
+    
+    local scheme="http"
+    [[ -n "$cert" ]] && scheme="https"
+    
+    local server_ip=""
+    for ip_url in "https://api4.ipify.org" "https://ipv4.icanhazip.com" "https://v4.api.ipinfo.io/ip"; do
+        server_ip=$(curl -s --max-time 3 "$ip_url" 2>/dev/null | tr -d '[:space:]')
+        [[ "$server_ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && break
+        server_ip=""
+    done
+    [[ -z "$server_ip" ]] && server_ip="YOUR_SERVER_IP"
+    
+    echo ""
+    echo -e "${green}╔══════════════════════════════════════════════╗${plain}"
+    echo -e "${green}║           🎉 面板安装信息汇总               ║${plain}"
+    echo -e "${green}╠══════════════════════════════════════════════╣${plain}"
+    echo -e "${green}║  用户名：${username}${plain}"
+    echo -e "${green}║  密  码：${password}${plain}"
+    echo -e "${green}║  端  口：${port}${plain}"
+    echo -e "${green}║  路  径：${webBasePath}${plain}"
+    echo -e "${green}║  访问地址：${scheme}://${server_ip}:${port}/${webBasePath}${plain}"
+    echo -e "${green}╚══════════════════════════════════════════════╝${plain}"
+    echo -e "${yellow}⚠ 请妥善保存以上信息！${plain}"
+    echo ""
+}
+
+show_panel_info
+
 install_x-ui $1
