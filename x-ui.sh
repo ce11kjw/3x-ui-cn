@@ -100,12 +100,12 @@ iplimit_banned_log_path="${log_folder}/3xipl-banned.log"
 
 confirm() {
     if [[ $# > 1 ]]; then
-        echo && read -rp "$1 [Default $2]: " temp
+        echo && read -rp "$1 [默认 $2]：" temp
         if [[ "${temp}" == "" ]]; then
             temp=$2
         fi
     else
-        read -rp "$1 [y/n]: " temp
+        read -rp "$1 [y/n]：" temp
     fi
     if [[ "${temp}" == "y" || "${temp}" == "Y" ]]; then
         return 0
@@ -115,7 +115,7 @@ confirm() {
 }
 
 confirm_restart() {
-    confirm "Restart the panel, Attention: Restarting the panel will also restart xray" "y"
+    confirm "重启面板，注意：重启面板也会重启xray" "y"
     if [[ $? == 0 ]]; then
         restart
     else
@@ -140,7 +140,7 @@ install() {
 }
 
 update() {
-    confirm "This function will update all x-ui components to the latest version, and the data will not be lost. Do you want to continue?" "y"
+    confirm "此功能将更新所有x-ui组件到最新版本，数据不会丢失。是否继续？" "y"
     if [[ $? != 0 ]]; then
         LOGE "Cancelled"
         if [[ $# == 0 ]]; then
@@ -156,7 +156,7 @@ update() {
 }
 
 update_dev() {
-    confirm "This will update x-ui to the latest DEV commit (the rolling 'dev-latest' build, not a stable release). Your data is preserved. Continue?" "y"
+    confirm "将更新x-ui到最新开发版（滚动构建，非稳定版）。数据会保留。是否继续？" "y"
     if [[ $? != 0 ]]; then
         LOGE "Cancelled"
         if [[ $# == 0 ]]; then
@@ -265,7 +265,7 @@ xui_env_file_path() {
 }
 
 uninstall() {
-    confirm "Are you sure you want to uninstall the panel? xray will also uninstalled!" "n"
+    confirm "确定要卸载面板吗？xray也会被卸载！" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -311,7 +311,7 @@ uninstall() {
 }
 
 reset_user() {
-    confirm "Are you sure to reset the username and password of the panel?" "n"
+    confirm "确定要重置面板的用户名和密码吗？" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -365,7 +365,7 @@ reset_webbasepath() {
 }
 
 reset_config() {
-    confirm "Are you sure you want to reset all panel settings, Account data will not be lost, Username and password will not change" "n"
+    confirm "确定要重置所有面板设置吗？账号数据不会丢失，用户名和密码不会改变" "n"
     if [[ $? != 0 ]]; then
         if [[ $# == 0 ]]; then
             show_menu
@@ -1507,7 +1507,7 @@ ssl_cert_issue_main() {
             echo -e "将使用短期配置为服务器IP获取证书。"
             echo -e "${yellow}证书有效期约6天，通过acme.sh定时任务自动续期。${plain}"
             echo -e "${yellow}Port 80 must be open and accessible from the internet.${plain}"
-            confirm "Do you want to proceed?" "y"
+            confirm "是否继续？" "y"
             if [[ $? == 0 ]]; then
                 ssl_cert_issue_for_ip
             fi
@@ -1962,7 +1962,7 @@ ssl_cert_issue_CF() {
     LOGI "3. Once the certificate is issued, you will be prompted to set the certificate for the panel (optional)."
     LOGI "4. The script also supports automatic renewal of the SSL certificate after installation."
 
-    confirm "Do you confirm the information and wish to proceed? [y/n]" "y"
+    confirm "确认信息无误并继续？[y/n]" "y"
 
     if [ $? -eq 0 ]; then
         # Check for acme.sh first
@@ -1985,7 +1985,7 @@ ssl_cert_issue_CF() {
         # single zone) or the account-wide Global API Key. acme.sh reads
         # CF_Token for tokens, or CF_Key + CF_Email for the Global Key.
         CF_KeyType=""
-        read -rp "Are you using a Cloudflare API Token or Global API Key? (t/g) [Default t]: " CF_KeyType
+        read -rp "Are you using a Cloudflare API Token or Global API Key? (t/g) [默认 t]：" CF_KeyType
         CF_KeyType=${CF_KeyType:-t}
 
         if [[ "$CF_KeyType" == "g" || "$CF_KeyType" == "G" ]]; then
@@ -2168,7 +2168,7 @@ iplimit_main() {
             show_menu
             ;;
         1)
-            confirm "Proceed with installation of Fail2ban & IP Limit?" "y"
+            confirm "是否安装Fail2ban和IP限制？" "y"
             if [[ $? == 0 ]]; then
                 install_iplimit
             else
@@ -2190,7 +2190,7 @@ iplimit_main() {
             iplimit_main
             ;;
         3)
-            confirm "Proceed with Unbanning everyone from IP Limit jail?" "y"
+            confirm "是否解封IP限制中的所有人？" "y"
             if [[ $? == 0 ]]; then
                 fail2ban-client reload --restart --unban 3x-ipl
                 truncate -s 0 "${iplimit_banned_log_path}"
@@ -2811,7 +2811,7 @@ purge_postgresql() {
     echo -e "${yellow}This panel was using PostgreSQL.${plain}"
     echo -e "${red}WARNING:${plain} purging removes the PostgreSQL server and ${red}ALL${plain} of its databases on"
     echo -e "this machine, including any used by other applications. This cannot be undone."
-    confirm "Also purge PostgreSQL and delete all of its data?" "n"
+    confirm "是否同时清除PostgreSQL并删除所有数据？" "n"
     if [[ $? != 0 ]]; then
         LOGI "Left PostgreSQL installed; its data was not removed."
         return 0
@@ -3135,7 +3135,7 @@ pg_write_env() {
 pg_install_server_action() {
     if postgresql_installed; then
         LOGI "PostgreSQL already appears to be installed on this system."
-        confirm "Run setup anyway (ensures the xui database/user exist)?" "n" || return 0
+        confirm "仍然运行设置吗（确保xui数据库/用户存在）？" "n" || return 0
     fi
     LOGI "安装ing PostgreSQL server and creating a dedicated user/database..."
     local dsn
@@ -3162,13 +3162,13 @@ migrate_to_postgres() {
     echo -e "${yellow}这将把当前SQLite数据复制到PostgreSQL数据库，${plain}"
     echo -e "${yellow}then switches the panel to PostgreSQL and restarts it.${plain}"
     echo -e "${red}Any existing panel tables in the destination will be cleared and overwritten.${plain}"
-    confirm "Continue?" "n" || return 0
+    confirm "继续？" "n" || return 0
 
     local dsn="" pg_mode
     if [[ -n "$PG_LAST_DSN" ]]; then
         echo -e "A PostgreSQL database was created in this session:"
         echo -e "  ${green}${PG_LAST_DSN}${plain}"
-        confirm "Migrate into this database?" "y" && dsn="$PG_LAST_DSN"
+        confirm "迁移到此数据库？" "y" && dsn="$PG_LAST_DSN"
     fi
 
     if [[ -z "$dsn" ]]; then
@@ -3370,7 +3370,7 @@ migrate_db_prompt() {
     local default_db="/etc/x-ui/x-ui.db"
     local input output
     echo -e "在SQLite ${green}.db${plain} 和可移植 ${green}.dump${plain} 之间转换（自动检测方向）。"
-    read -rp "输入文件[${default_db}]: " input
+    read -rp "输入文件[${default_db}]：" input
     input="${input:-$default_db}"
     read -rp "输出文件（留空自动命名在输入文件旁）：" output
     migrate_db "$input" "$output"
