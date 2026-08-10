@@ -1683,23 +1683,30 @@ install_base
 
 # ==================== 显示面板信息 ====================
 show_panel_info() {
-    local settings=$(${xui_folder}/x-ui setting -show true 2>/dev/null)
-    local username=$(echo "$settings" | grep -Eo 'username: .+' | awk '{print $2}')
-    local password=$(echo "$settings" | grep -Eo 'password: .+' | awk '{print $2}')
-    local port=$(echo "$settings" | grep -Eo 'port: .+' | awk '{print $2}')
-    local webBasePath=$(echo "$settings" | grep -Eo 'webBasePath: .+' | awk '{print $2}')
-    local cert=$(echo "$settings" | grep -Eo 'cert: .+' | awk '{print $2}' | tr -d '[:space:]')
+    local env_file="/etc/x-ui/install-result.env"
+    if [[ ! -f "$env_file" ]]; then
+        echo -e "${yellow}未找到面板信息文件，跳过显示。${plain}"
+        return 0
+    fi
+    source "$env_file"
     
-    local scheme="http"
-    [[ -n "$cert" ]] && scheme="https"
+    local username="${XUI_USERNAME:-未知}"
+    local password="${XUI_PASSWORD:-未知}"
+    local port="${XUI_PANEL_PORT:-未知}"
+    local webBasePath=$(echo "${XUI_WEB_BASE_PATH:-}" | sed 's#^/##;s#/$##')
+    local access_url="${XUI_ACCESS_URL:-}"
+    local api_token="${XUI_API_TOKEN:-}"
     
-    local server_ip=""
-    for ip_url in "https://api4.ipify.org" "https://ipv4.icanhazip.com" "https://v4.api.ipinfo.io/ip"; do
-        server_ip=$(curl -s --max-time 3 "$ip_url" 2>/dev/null | tr -d '[:space:]')
-        [[ "$server_ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && break
-        server_ip=""
-    done
-    [[ -z "$server_ip" ]] && server_ip="YOUR_SERVER_IP"
+    if [[ -z "$access_url" ]]; then
+        local server_ip=""
+        for ip_url in "https://api4.ipify.org" "https://ipv4.icanhazip.com" "https://v4.api.ipinfo.io/ip"; do
+            server_ip=$(curl -s --max-time 3 "$ip_url" 2>/dev/null | tr -d '[:space:]')
+            [[ "$server_ip" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && break
+            server_ip=""
+        done
+        [[ -z "$server_ip" ]] && server_ip="YOUR_SERVER_IP"
+        access_url="http://${server_ip}:${port}/${webBasePath}"
+    fi
     
     echo ""
     echo -e "${green}╔══════════════════════════════════════════════╗${plain}"
@@ -1708,8 +1715,9 @@ show_panel_info() {
     echo -e "${green}║  用户名：${username}${plain}"
     echo -e "${green}║  密  码：${password}${plain}"
     echo -e "${green}║  端  口：${port}${plain}"
-    echo -e "${green}║  路  径：${webBasePath}${plain}"
-    echo -e "${green}║  访问地址：${scheme}://${server_ip}:${port}/${webBasePath}${plain}"
+    echo -e "${green}║  路  径：/${webBasePath}${plain}"
+    echo -e "${green}║  访问地址：${access_url}${plain}"
+    echo -e "${green}║  API令牌：${api_token}${plain}"
     echo -e "${green}╚══════════════════════════════════════════════╝${plain}"
     echo -e "${yellow}⚠ 请妥善保存以上信息！${plain}"
     echo ""
