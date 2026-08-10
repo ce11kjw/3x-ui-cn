@@ -100,7 +100,7 @@ iplimit_banned_log_path="${log_folder}/3xipl-banned.log"
 
 confirm() {
     if [[ $# > 1 ]]; then
-        echo && read -rp "$1 [Default $2]: " temp
+        echo && read -rp "$1 [默认 $2]: " temp
         if [[ "${temp}" == "" ]]; then
             temp=$2
         fi
@@ -1096,7 +1096,7 @@ open_ports() {
 
     # Check if the input is valid
     if ! [[ $ports =~ ^([0-9]+|[0-9]+-[0-9]+)(,([0-9]+|[0-9]+-[0-9]+))*$ ]]; then
-        echo "Error: Invalid input. Please enter a comma-separated list of ports or a range of ports (e.g. 80,443,2053 or 400-500)." >&2
+        echo "错误：输入无效。请输入逗号分隔的端口列表或端口范围（如80,443,2053或400-500）。" >&2
         exit 1
     fi
 
@@ -1139,7 +1139,7 @@ delete_ports() {
     # Ask the user how they want to delete rules
     echo "Do you want to delete rules by:"
     echo "1) 规则编号"
-    echo "2) Ports"
+    echo "2) 端口"
     read -rp "请选择（1或2）：" choice
 
     if [[ $choice -eq 1 ]]; then
@@ -1167,7 +1167,7 @@ delete_ports() {
 
         # Validate the input
         if ! [[ $ports =~ ^([0-9]+|[0-9]+-[0-9]+)(,([0-9]+|[0-9]+-[0-9]+))*$ ]]; then
-            echo "Error: Invalid input. Please enter a comma-separated list of ports or a range of ports (e.g. 80,443,2053 or 400-500)." >&2
+            echo "错误：输入无效。请输入逗号分隔的端口列表或端口范围（如80,443,2053或400-500）。" >&2
             exit 1
         fi
 
@@ -1229,7 +1229,7 @@ update_geofiles() {
             dat_source="runetfreedom/russia-v2ray-rules-dat"
             ;;
         *)
-            echo -e "${red}update_geofiles: unknown dataset '${1}'${plain}"
+            echo -e "${red}update_geofiles: 未知数据集 '${1}'${plain}"
             return 1
             ;;
     esac
@@ -1340,12 +1340,12 @@ install_acme() {
 }
 
 ssl_cert_issue_main() {
-    echo -e "${green}\t1.${plain} Get SSL (Domain)"
-    echo -e "${green}\t2.${plain} Revoke & Remove"
-    echo -e "${green}\t3.${plain} Force Renew"
-    echo -e "${green}\t4.${plain} Show Existing Domains"
-    echo -e "${green}\t5.${plain} Set Cert paths for the panel"
-    echo -e "${green}\t6.${plain} Get SSL for IP Address (6-day cert, auto-renews)"
+    echo -e "${green}\t1.${plain} 获取SSL（域名）"
+    echo -e "${green}\t2.${plain} 吊销并移除"
+    echo -e "${green}\t3.${plain} 强制续期"
+    echo -e "${green}\t4.${plain} 显示已有域名"
+    echo -e "${green}\t5.${plain} 设置面板证书路径"
+    echo -e "${green}\t6.${plain} 获取SSL（IP地址，6天证书，自动续期）"
     echo -e "${green}\t0.${plain} 返回主菜单"
 
     read -rp "请选择： " choice
@@ -1570,7 +1570,7 @@ ssl_cert_issue_for_ip() {
 
     # Ask for optional IPv6
     local ipv6_addr=""
-    read -rp "Do you have an IPv6 address to include? (leave empty to skip): " ipv6_addr
+    read -rp "是否有IPv6地址需要包含？（留空跳过）：" ipv6_addr
     ipv6_addr="${ipv6_addr// /}" # Trim whitespace
 
     # check for acme.sh first
@@ -2316,7 +2316,7 @@ setup_fail2ban_iplimit() {
                 apk add fail2ban nftables
                 ;;
             *)
-                echo -e "${red}Unsupported operating system. Please check the script and install the necessary packages manually.${plain}\n"
+                echo -e "${red}不支持的操作系统。请检查脚本并手动安装必要的包。${plain}\n"
                 return 1
                 ;;
         esac
